@@ -6,21 +6,20 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.database import get_db
-#from app.models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-def hash_password(password: str) -> str:
+def password(hashed_password: str) -> str:
     """
     Hash le mot de passe en clair en utilisant bcrypt et retourne le hash résultant.
-    Args: password (str): Le mot de passe en clair à hasher.
+    Args: hashed_password (str): Le mot de passe en clair à hasher.
     Returns: str: Le mot de passe hashé.
 
     Exemple d'utilisation:
-    hashed_password = hash_password("my_secure_password")
+    hashed_password = password("my_secure_password")
     """    
-    return pwd_context.hash(password)
+    return pwd_context.hash(hashed_password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
@@ -79,7 +78,6 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     Exemple d'utilisation:
     current_user = get_current_user(token, db)
     """  
-
     from app.models.models import User # Importation locale pour éviter les problèmes de dépendances circulaires
 
     payload = decode_access_token(token)
@@ -90,11 +88,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             detail="Token d'accès invalide",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    #user = db.query(User).filter(User.email == email).first()
-    #if user is None:
-    #    raise HTTPException(
-    #        status_code=status.HTTP_401_UNAUTHORIZED,
-    #        detail="Utilisateur non trouvé",
-    #        headers={"WWW-Authenticate": "Bearer"},
-    #    )
-    #return user
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+       raise HTTPException(
+           status_code=status.HTTP_401_UNAUTHORIZED,
+           detail="Utilisateur non trouvé",
+           headers={"WWW-Authenticate": "Bearer"},
+       )
+    return user

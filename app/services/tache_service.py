@@ -12,11 +12,7 @@ def create_tache(db: Session, tache_create: TacheCreate, user: User) -> Tache:
 
     Exemple d'utilisation:
     new_tache = create_tache(db, tache_create, user)
-    """    
-    # Vérifier si l'utilisateur existe
-    """ if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found") """
-    
+    """        
     # Créer une nouvelle instance de Tache
     new_tache = Tache(
         title=tache_create.title,
@@ -41,10 +37,6 @@ def get_taches_by_user(db: Session, user: User) -> List[Tache]:
     Exemple d'utilisation:
     taches = get_taches_by_user(db, user)
     """    
-    # Vérifier si l'utilisateur existe
-    """ if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found") """
-    
     # Récupérer les tâches associées à l'utilisateur
     taches = db.query(Tache).filter(Tache.user_id == user.id).all()
     
@@ -75,30 +67,17 @@ def update_tache(db: Session, tache_id: int, tache_update: TacheUpdate, user: Us
 
     Exemple d'utilisation:
     updated_tache = update_tache(db, tache_id, tache_update, user)
-    """    
-    # Récupérer la tâche à mettre à jour
+    """
+    # Récupérer la tâche à mettre à jour (lève une exception si non trouvée)
     tache = get_tache(db, tache_id, user)
-    
-    if not tache:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tache not found")
-    
-    tache_update = tache_update.model_dump(exclude_unset=True)  # Exclure les champs non définis pour ne pas les écraser avec des valeurs par défaut   
-    for key, value in tache_update.items():
+
+    update_data = tache_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
         setattr(tache, key, value)
 
-
-    # Mettre à jour les champs de la tâche
-    """  if tache_update.title is not None:
-        tache.title = tache_update.title
-    if tache_update.description is not None:
-        tache.description = tache_update.description
-    if tache_update.terminated is not None:
-        tache.terminated = tache_update.terminated """
-    
-    # Commit les changements dans la base de données
     db.commit()
     db.refresh(tache)
-    
+
     return tache
 
 def delete_tache(db: Session, tache_id: int, user: User) -> dict:
@@ -108,14 +87,34 @@ def delete_tache(db: Session, tache_id: int, user: User) -> dict:
     Returns: dict: Un message de confirmation.
     Exemple d'utilisation:
     delete_tache(db, tache_id, user)
+    """
+    # Récupérer la tâche à supprimer (lève une exception si non trouvée)
+    tache = get_tache(db, tache_id, user)
+
+    db.delete(tache)
+    db.commit()
+    return {"message": f"Tache '{tache.title}' deleted successfully"}
+
+def toggle_terminated(db: Session, tache_id: int, user: User) -> Tache:
+    """
+    Bascule l'état de la tâche entre terminée et non terminée.
+    Args: db (Session): La session de base de données. tache_id (int): L'ID de la tâche à basculer. user (User): L'utilisateur qui bascule l'état de la tâche.
+    Returns: Tache: La tâche avec son état mis à jour.
+
+    Exemple d'utilisation:
+    toggled_tache = toggle_terminated(db, tache_id, user)
     """    
-    # Récupérer la tâche à supprimer
+    # Récupérer la tâche à basculer
     tache = get_tache(db, tache_id, user)
     
     if not tache:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tache not found")
     
-    # Supprimer la tâche de la base de données
-    db.delete(tache)
+    # Basculer l'état de la tâche
+    tache.terminated = not tache.terminated
+    
+    # Commit les changements dans la base de données
     db.commit()
-    return {"message": f"Tache '{tache.title}' deleted successfully"}
+    db.refresh(tache)
+    
+    return tache

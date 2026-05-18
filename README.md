@@ -13,11 +13,11 @@ API REST professionnelle de gestion de tâches.
 ## Structure du projet
 \```
 app/
-├── core/       → configuration, sécurité, base de données
-├── models/     → tables SQLAlchemy
-├── schemas/    → validation Pydantic
-├── routes/     → endpoints HTTP
-└── services/   → logique métier
+|-- core/       → configuration, sécurité, base de données
+|-- models/     → tables SQLAlchemy
+|-- schemas/    → validation Pydantic
+|-- routes/     → endpoints HTTP
+|-- services/   → logique métier
 \```
 
 ## Installation

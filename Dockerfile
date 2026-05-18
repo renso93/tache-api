@@ -28,6 +28,6 @@ EXPOSE 8000
 # Note : c'est informatif, pas suffisant seul
 
 # 7. Commande de démarrage
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 # --host 0.0.0.0 = écouter sur toutes les interfaces réseau
 # IMPORTANT : sans ça, ton app n'est pas accessible depuis l'extérieur

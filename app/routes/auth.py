@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["authentication"]
 )
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserResponse, status_code=201)
 def register(user_create: UserCreate, db: Session = Depends(get_db)):
     """
     Enregistre un nouvel utilisateur.
@@ -29,13 +29,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     """
     Authentifie un utilisateur et retourne un token d'accès.
     Args: form_data (OAuth2PasswordRequestForm, optional): Les données de connexion de l'utilisateur. db (Session, optional): La session de base de données. Par défaut, une nouvelle session est créée.
-    Returns: user: L'utilisateur authentifié.
+    Returns: Token: Le token d'accès généré.
 
     Exemple d'utilisation:
     token = login(form_data, db)
     """    
     user = authenticate_user(db, form_data.username, form_data.password)
-    #access_token = create_access_token(data={"sub": str(user.id)})
     return user
 
 @router.get("/me", response_model=UserResponse)

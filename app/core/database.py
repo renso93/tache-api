@@ -13,14 +13,6 @@ def get_database_url():
         database=quote_plus(settings.BD_NAME)
     )
 
-import os
-
-for k, v in os.environ.items():
-    try:
-        v.encode("utf-8")
-    except UnicodeEncodeError:
-        print("❌ PROBLEME:", k, repr(v))
-
 engine = create_engine(
     get_database_url(),
     pool_pre_ping=True, # Vérifie la connexion avant de l'utiliser
