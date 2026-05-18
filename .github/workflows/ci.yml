@@ -25,12 +25,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Lancer les tests
-        env:
-          DB_USER: postgres
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: localhost
-          DB_NAME: tache_api_db
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          ALGORITHM: HS256
-          ACCESS_TOKEN_EXPIRE_MINUTES: 30
-        run: pytest src/tests/ -v
+        run: python -m pytest test/ -v
