@@ -1,16 +1,17 @@
-from pydantic_settings import BaseSettings
-from pydantic import field_validator
 from functools import lru_cache
 
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
+
 class Settings(BaseSettings):
-    """Configuration centralisée lue depuis .env ou  variable d’environnement"""
+    """Configuration centralisée lue depuis .env ou variable d’environnement"""
 
     # === DATABASE ===
-    BD_USER: str = "postgres"
-    BD_PASSWORD: str = "postgres123"
-    BD_HOST: str = "localhost"
-    BD_NAME: str = "taches_api_db"
-    BD_PORT: int = 5432
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "postgres123"
+    DB_HOST: str = "localhost"
+    DB_NAME: str = "taches_api_db"
+    DB_PORT: int = 5432
 
     #  === JWT ===
     SECRET_KEY: str = "your-secret-key-change-me-in-production-min-32-chars"

@@ -9,6 +9,24 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: taches_api_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready -U postgres
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Récupérer le code
@@ -21,8 +39,17 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
 
       - name: Lancer les tests
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres123
+          DB_HOST: localhost
+          DB_NAME: taches_api_db
+          DB_PORT: 5432
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALGORITHM: HS256
+          ACCESS_TOKEN_EXPIRE_MINUTES: 30
         run: python -m pytest test/ -v

@@ -7,10 +7,10 @@ from app.core.config import settings
 def get_database_url():
     return URL.create(
         drivername="postgresql+psycopg2",
-        username=quote_plus(settings.BD_USER),
-        password=quote_plus(settings.BD_PASSWORD),
-        host=settings.BD_HOST,
-        database=quote_plus(settings.BD_NAME)
+        username=quote_plus(settings.DB_USER),
+        password=quote_plus(settings.DB_PASSWORD),
+        host=settings.DB_HOST,
+        database=quote_plus(settings.DB_NAME)
     )
 
 engine = create_engine(
