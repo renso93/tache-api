@@ -49,4 +49,4 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALGORITHM: HS256
           ACCESS_TOKEN_EXPIRE_MINUTES: 30
-        run: python -m pytest tests/ -v
+        run: python -m pytest test/ -v
